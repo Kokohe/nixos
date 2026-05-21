@@ -17,6 +17,9 @@
     gcc
     lynx
     surfraw
+    warbar
+    rofi-wayland
+    hyprpaper
   ];
 
   environment.variables = {
