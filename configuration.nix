@@ -17,8 +17,8 @@
     gcc
     lynx
     surfraw
-    warbar
-    rofi-wayland
+    waybar
+    rofi
     hyprpaper
   ];
 
@@ -28,7 +28,7 @@
 
   environment.shellAliases = {
     nixConfig = "vim /etc/nixos/configuration.nix";
-    nixBuild = "cd /etc/nixos && sudo nixos-rebuild switch --flake /etc/nixos#yarara && git add . && git commit -m";
+    nixBuild = "cd /etc/nixos && git add . && sudo nixos-rebuild switch --flake /etc/nixos#yarara && git commit -m";
     Ducknet = "surfraw duckduckgo";
   };
 
