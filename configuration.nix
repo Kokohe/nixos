@@ -63,20 +63,18 @@
     hyprpaper
     wget
     kitty
+    firefox
   ];
 
   environment.variables = {
     BROWSER="lynx";
   };
 
-  environment.sessionVariables = {
-  };
-
   environment.shellAliases = {
-    nixConfig = "sudo vim /etc/nixos/configuration.nix";
-    nixBuild = "sudo cd /etc/nixos && sudo nixos-rebuild switch --flake /etc/nixos#yarara";
-    Ducknet = "surfraw duckduckgo";
+    nixConfig = "vim /etc/nixos/configuration.nix";
+    nixBuild = "cd /etc/nixos && sudo nixos-rebuild switch --flake /etc/nixos#yarara";
+    duckNet = "surfraw duckduckgo";
     hyprConfig = "vim ~/.config/hypr/hyprland.conf";
-    nixSync = "sudo cd /etc/nixos && git add . && git commit -m 'sync' && git push";
+    nixSync = "cd /etc/nixos && sudo git add . && sudo git commit -m 'sync' && sudo git push";
   };
 }
