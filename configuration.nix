@@ -64,6 +64,7 @@
     wget
     kitty
     firefox
+    swaync
   ];
 
   environment.variables = {
