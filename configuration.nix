@@ -2,28 +2,72 @@
 
 {
   imports = [
-   #  <nixos-avf/avf>
-    # include nixos-avf modules
   ];
 
   avf.defaultUser = "koko";
   system.stateVersion = "26.05";
-  programs.hyprland.enable = true;
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+  };
+  avf.enableGraphics = true;
+  systemd.services.weston.enable = false;
+  systemd.user.services.weston.enable = false;
+
+  services.seatd.enable = true;
+  users.users.koko.extraGroups = [ "seat" ];
+  console.keyMap = "us";
+
+  systemd.services.greetd.serviceConfig.ExecStartPre = [
+  "${pkgs.coreutils}/bin/mkdir -p /run/user/1002"
+  "${pkgs.coreutils}/bin/chown koko:koko /run/user/1002"
+  "${pkgs.coreutils}/bin/chmod 700 /run/user/1002"
+  ];
+
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${pkgs.writeShellScript "hypr-launch" ''
+  mkdir -p /run/user/1002
+  chown koko:koko /run/user/1002
+  chmod 700 /run/user/1002
+  export XDG_RUNTIME_DIR=/run/user/1002
+  unset WAYLAND_DISPLAY
+  unset DISPLAY
+  unset MESA_VK_WSI_DEBUG
+  export WLR_NO_HARDWARE_CURSORS=1
+  export MESA_LOADER_DRIVER_OVERRIDE=virtio_gpu
+  export LIBGL_DRIVERS_PATH=/run/opengl-driver/lib/dri
+  export LD_LIBRARY_PATH=/run/opengl-driver/lib
+  ${config.programs.hyprland.package}/bin/Hyprland >> /tmp/hy.log 2>&1
+''}";
+        user = "greeter";
+      };
+    };
+  };
+
+
   environment.systemPackages = with pkgs;[
+    poppler-utils
     vim
     git
     gcc
     lynx
     surfraw
     waybar
-    rofi
+    wofi
     hyprpaper
+    wget
   ];
 
   environment.variables = {
     BROWSER="lynx";
+  };
+
+  environment.sessionVariables = {
   };
 
   environment.shellAliases = {
@@ -31,5 +75,4 @@
     nixBuild = "cd /etc/nixos && git add . && sudo nixos-rebuild switch --flake /etc/nixos#yarara && git commit -m";
     Ducknet = "surfraw duckduckgo";
   };
-
 }
